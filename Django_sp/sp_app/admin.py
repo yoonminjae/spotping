@@ -1,0 +1,178 @@
+# _*_ encoding: utf-8 _*_
+
+from django.contrib import admin
+from django import forms
+
+from django.contrib.auth.models import User, UserManager
+from django.contrib.auth.admin import UserAdmin
+
+from sp_app.models import *
+
+
+class USERInline(admin.StackedInline):
+    model = USER
+    can_delete = False
+    verbose_name_plural = 'USER'
+
+class UserAdmin(admin.ModelAdmin):
+    inlines = (USERInline, )
+    list_display = ('id', 'username', 'password', 'email',)
+
+class USER_SELLERAdmin(admin.ModelAdmin):
+	list_display = ('user_seller_id','user_seller_photo_index,' 'user_seller_marketName', 'user_seller_address',)
+
+class USER_BUYERAdmin(admin.ModelAdmin):
+	list_display = ('user_buyer_id','user_buyer_photo_index', 'user_buyer_address')
+
+class PRODUCTAdmin(admin.ModelAdmin):
+	list_display = ('product_index','product_photo_index' 'product_marketName', 'product_name', 'product_brand', 'product_unit' ,'product_category_seller', 'product_category_buyer', 'product_price', 'product_coupon_active', 'product_coupon_times',)
+
+
+#-사용자 DB-----------------------------------------------------------------
+class USER_FAVORITE_LIST(models.Model):
+      	class Meta:
+		verbose_name = u'USER_FAVORITE_LIST'
+		db_table = 'USER_FAVORITE_LIST_DB'
+	user_favorite_list_index = models.IntegerField(verbose_name=u'user_favorite_list_index', primary_key=True, unique=True, db_index=True,)
+	user_favorite_list_userid = models.CharField(verbose_name=u'user_favorite_list_userid', max_length='20',)
+	user_favorite_list_product_name = models.CharField(verbose_name=u'user_favorite_list_product_name', max_length='30',)
+	user_favorite_list_product_brand = models.CharField(verbose_name=u'user_favorite_list_product_brand', max_length='20',)
+	user_favorite_list_product_unit = models.CharField(verbose_name=u'user_favorite_list_product_unit',max_length='20',)
+	user_favorite_list_product_category = models.CharField(verbose_name=u'user_favorite_list_product_category',  max_length='20',)
+
+class USER_COUPON_USEDLIST(models.Model):
+      	class Meta:
+		verbose_name = u'USER_COUPON_USEDLIST'
+		db_table = 'USER_COUPON_USEDLIST_DB'
+	user_coupon_usedlist_index = models.IntegerField(verbose_name=u'user_coupon_usedlist_index', primary_key=True, unique=True, db_index=True,)
+	user_coupon_usedlist_userid = models.CharField(verbose_name=u'user_coupon_usedlist_userid', max_length='20',)
+	user_coupon_usedlist_product_name = models.CharField(verbose_name=u'user_coupon_usedlist_product_name', max_length='30',)
+	user_coupon_usedlist_product_brand = models.CharField(verbose_name=u'user_coupon_usedlist_product_brand', max_length='20',)
+	user_coupon_usedlist_product_unit = models.CharField(verbose_name=u'user_coupon_usedlist_product_unit',max_length='20',)
+	user_coupon_usedlist_product_category = models.CharField(verbose_name=u'user_coupon_usedlist_product_category',  max_length='20',)
+	user_coupon_usedlist_type = models.IntegerField(verbose_name=u'user_coupon_usedlist_type',null=False, default=0,)
+        
+
+#----------------------------------------------------------------------------
+class SP_PICTURE(models.Model):
+	class Meta:
+		verbose_name = u'SP_PICTURE'
+		db_table = 'SP_PICTURE_DB'
+	sp_photo_index = models.IntegerField(verbose_name=u'sp_photo_index', primary_key=True, unique=True, db_index=True,)
+	sp_name = models.CharField(verbose_name=u'sp_name', max_length=100)
+	sp_picture = models.ImageField(verbose_name=u'sp_picture', upload_to='/sp_app/sp_pictures/sp_pictures/', blank=True, null=True)
+
+
+class USER_PICTURE(models.Model):
+	class Meta:
+		verbose_name = u'USER_PICTURE'
+		db_table = 'USER_PICTURE_DB'
+	user_photo_index = models.IntegerField(verbose_name=u'user_photo_index', primary_key=True, unique=True, db_index=True,)
+	user_name = models.CharField(verbose_name=u'user_name', max_length=100)
+	user_picture = models.ImageField(verbose_name=u'user_picture', upload_to='sp_app/sp_pictures/sp_pictures/', blank=True, null=True)
+
+
+#-product_list--------------------------------------------
+class COUPON_DAILYAdmin(admin.ModelAdmin):
+	list_display = ('coupon_daily_index','coupon_daily_photo_index','coupon_daily_marketname','coupon_daily_name', 'coupon_daily_brand', 'coupon_daily_unit',
+                        'coupon_daily_price','coupon_daily_start','coupon_daily_finish','coupon_daily_times','coupon_daily_type',)
+
+class COUPON_GREENSAdmin(admin.ModelAdmin):
+	list_display = ('coupon_greens_index','coupon_greens_photo_index','coupon_greens_marketname', 'coupon_greens_name', 'coupon_greens_brand', 'coupon_greens_unit', 'coupon_greens_area',
+                        'coupon_greens_price','coupon_greens_start','coupon_greens_finish','coupon_greens_times','coupon_greens_type',)
+
+class COUPON_FISHAdmin(admin.ModelAdmin):
+	list_display = ('coupon_fish_index','coupon_fish_photo_index','coupon_fish_marketname', 'coupon_fish_name', 'coupon_fish_brand', 'coupon_fish_unit', 'coupon_fish_area',
+                        'coupon_fish_price','coupon_fish_start','coupon_fish_finish','coupon_fish_times','coupon_fish_type',)
+      
+class COUPON_RICEAdmin(admin.ModelAdmin):
+	list_display = ('coupon_rice_index','coupon_rice_photo_index','coupon_rice_marketname','coupon_rice_name', 'coupon_rice_brand', 'coupon_rice_unit', 'coupon_rice_area',
+                        'coupon_rice_price','coupon_rice_start','coupon_rice_finish','coupon_rice_times','coupon_rice_type',)
+
+class COUPON_MEATAdmin(admin.ModelAdmin):
+	list_display = ('coupon_meat_index','coupon_meat_photo_index', 'coupon_meat_marketname','coupon_meat_name', 'coupon_meat_brand', 'coupon_meat_unit', 'coupon_meat_area',
+                        'coupon_meat_price','coupon_meat_start','coupon_meat_finish','coupon_meat_times','coupon_meat_type',)
+
+class COUPON_EGGAdmin(admin.ModelAdmin):
+	list_display = ('coupon_egg_index','coupon_egg_photo_index', 'coupon_egg_marketname','coupon_egg_name', 'coupon_egg_brand', 'coupon_egg_unit', 'coupon_egg_area',
+                        'coupon_egg_price','coupon_egg_start','coupon_egg_finish','coupon_egg_times','coupon_egg_type',)
+
+class COUPON_HAMAdmin(admin.ModelAdmin):
+	list_display = ('coupon_ham_index','coupon_ham_photo_index', 'coupon_ham_marketname','coupon_ham_name', 'coupon_ham_brand', 'coupon_ham_unit', 'coupon_ham_price',
+                        'coupon_ham_start','coupon_ham_finish','coupon_ham_times','coupon_ham_type',)
+
+class COUPON_SIDEAdmin(admin.ModelAdmin):
+	list_display = ('coupon_side_index','coupon_side_photo_index', 'coupon_side_marketname','coupon_side_name', 'coupon_side_brand', 'coupon_side_unit', 'coupon_side_price',
+                        'coupon_side_start','coupon_side_finish','coupon_side_times','coupon_side_type',)
+
+class COUPON_WATERAdmin(admin.ModelAdmin):
+	list_display = ('coupon_water_index','coupon_water_photo_index', 'coupon_water_marketname','coupon_water_name', 'coupon_water_brand', 'coupon_water_unit', 'coupon_water_price',
+                        'coupon_water_start','coupon_water_finish','coupon_water_times','coupon_water_type',)
+
+class COUPON_INSTANTAdmin(admin.ModelAdmin):
+	list_display = ('coupon_instant_index','coupon_instant_photo_index','coupon_instant_marketname' ,'coupon_instant_name', 'coupon_instant_brand', 'coupon_instant_unit', 'coupon_instant_price',
+                        'coupon_instant_start','coupon_instant_finish','coupon_instant_times','coupon_instant_type',)
+
+class COUPON_ICEAdmin(admin.ModelAdmin):
+	list_display = ('coupon_ice_index','coupon_ice_photo_index', 'coupon_ice_marketname','coupon_ice_name', 'coupon_ice_brand', 'coupon_ice_unit', 'coupon_ice_price',
+                        'coupon_ice_start','coupon_ice_finish','coupon_ice_times','coupon_ice_type',)
+
+class COUPON_BAKERYAdmin(admin.ModelAdmin):
+	list_display = ('coupon_bakery_index','coupon_bakery_photo_index', 'coupon_bakery_marketname','coupon_bakery_name', 'coupon_bakery_brand', 'coupon_bakery_unit', 'coupon_bakery_price',
+                        'coupon_bakery_start','coupon_bakery_finish','coupon_bakery_times','coupon_bakery_type',)
+
+class COUPON_SNACKAdmin(admin.ModelAdmin):
+	list_display = ('coupon_snack_index','coupon_snack_photo_index', 'coupon_snack_marketname','coupon_snack_name', 'coupon_snack_brand', 'coupon_snack_unit', 'coupon_snack_price',
+                        'coupon_snack_start','coupon_snack_finish','coupon_snack_times','coupon_snack_type',)
+
+
+#-user_buyer-------------------------------------------
+class USER_FAVORITE_LISTAdmin(admin.ModelAdmin):
+	list_display = ('user_favorite_list_index', 'user_favorite_list_userid', 'user_favorite_list_product_name', 'user_favorite_list_product_brand', 'user_favorite_list_product_unit','user_favorite_list_product_cate',)
+
+class USER_COUPON_USELISTAdmin(admin.ModelAdmin):
+	list_display = ('user_coupon_uselist_index', 'user_coupon_uselist_userid', 'user_coupon_uselist_product_name', 'user_coupon_uselist_product_brand',
+                        'user_coupon_uselist_product_unit','user_coupon_uselist_product_cate','user_coupon_uselist_type',)
+		
+
+#-picture-------------------------------------------
+class SP_PICTUREAdmin(admin.ModelAdmin):
+	list_display = ('sp_photo_index', 'sp_name', 'sp_picture')
+
+class USER_PICTUREAdmin(admin.ModelAdmin):
+	list_display = ('user_photo_index', 'user_name', 'user_picture')
+
+
+
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+
+# Register your models here.
+admin.site.register(USER_SELLER, USER_SELLERAdmin)
+admin.site.register(USER_BUYER, USER_BUYERAdmin)
+admin.site.register(PRODUCT, PRODUCTAdmin)
+admin.site.register(COUPON_DAILY, COUPON_DAILYAdmin)
+admin.site.register(COUPON_GREENS, COUPON_GREENSAdmin)
+admin.site.register(COUPON_FISH, COUPON_FISHAdmin)
+admin.site.register(COUPON_RICE, COUPON_RICEAdmin)
+admin.site.register(COUPON_MEAT, COUPON_MEATAdmin)
+admin.site.register(COUPON_EGG, COUPON_EGGAdmin)
+admin.site.register(COUPON_HAM, COUPON_HAMAdmin)
+admin.site.register(COUPON_SIDE, COUPON_SIDEAdmin)
+admin.site.register(COUPON_WATER, COUPON_WATERAdmin)
+admin.site.register(COUPON_INSTANT, COUPON_INSTANTAdmin)
+admin.site.register(COUPON_ICE, COUPON_ICEAdmin)
+admin.site.register(COUPON_BAKERY, COUPON_BAKERYAdmin)
+admin.site.register(COUPON_SNACK, COUPON_SNACKAdmin)
+
+admin.site.register(USER_FAVORITE_LIST, USER_FAVORITE_LISTAdmin)
+admin.site.register(USER_COUPON_USELIST, USER_COUPON_USELISTAdmin)
+
+admin.site.register(SP_PICTURE, SP_PICTUREAdmin)
+admin.site.register(USER_PICTURE, USER_PICTUREAdmin)
+
+
+
+
